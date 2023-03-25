@@ -1,4 +1,4 @@
-# Coronavirus-COVID-19-Deaths-Project---Data-Exploration
+# Coronavirus-COVID-19-Deaths-Project--- SQL-Data-Exploration
 
 ## the main stuff columns we're going to be working with is 
 (total_cases, new_cases, total_deaths, new_deaths, total_vaccinations, people_vaccinated, population)
