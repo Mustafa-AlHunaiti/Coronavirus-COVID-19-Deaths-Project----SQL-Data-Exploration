@@ -1,4 +1,5 @@
 # Coronavirus-COVID-19-Deaths-Project---SQL-Data-Exploration
+[Daily new confirmed COVID-19 deaths per million people](https://ourworldindata.org/covid-deaths#:~:text=Daily%20new%20confirmed%20COVID%2D19%20deaths%20per%20million%20people)
 
 ## The main stuff columns we're going to be working with is 
 (total_cases, new_cases, total_deaths, new_deaths, total_vaccinations, people_vaccinated, population)
