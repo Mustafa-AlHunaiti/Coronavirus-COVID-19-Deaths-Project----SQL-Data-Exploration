@@ -189,5 +189,45 @@ FROM PopVSVac
 
 
 
+-- TEMP TABLE
 
+DROP TABLE IF EXISTS #PercentPopulationVaccinated
+CREATE TABLE #PercentPopulationVaccinated 
+(
+Continent nvarchar(255),
+location  nvarchar(255),
+Date datetime,
+Population numeric,
+new_vaccinations numeric,
+RollingPeopleVaccinated numeric
+)
+
+INSERT INTO #PercentPopulationVaccinated
+SELECT dea.continent, dea.location, dea.date, dea.Population, vac.new_vaccinations
+, SUM(CONVERT(bigint, vac.new_vaccinations)) OVER (PARTITION BY dea.location ORDER BY dea.location, dea.date) AS RollingPeopleVaccinated 
+FROM PortfolioProject..CovidDeaths dea
+JOIN PortfolioProject..CovidVaccinations vac
+	ON dea.location = vac.location
+	AND dea.date = vac.date
+--WHERE dea.continent IS NOT NULL 
+--ORDER BY 2, 3
+
+
+
+SELECT *, (RollingPeopleVaccinated/Population)*100 
+FROM #PercentPopulationVaccinated
+
+
+
+-- Creating View to store data for later visualizations 
+
+CREATE VIEW PercentPopulationVaccinated AS 
+SELECT dea.continent, dea.location, dea.date, dea.Population, vac.new_vaccinations
+, SUM(CONVERT(bigint, vac.new_vaccinations)) OVER (PARTITION BY dea.location ORDER BY dea.location, dea.date) AS RollingPeopleVaccinated 
+FROM PortfolioProject..CovidDeaths dea
+JOIN PortfolioProject..CovidVaccinations vac
+	ON dea.location = vac.location
+	AND dea.date = vac.date
+WHERE dea.continent IS NOT NULL 
+--ORDER BY 2, 3
 
