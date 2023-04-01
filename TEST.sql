@@ -1,6 +1,7 @@
-SELECT *
+SELECT  * 
 FROM PortfolioProject..CovidDeaths -- table 1
 ORDER BY 3, 4
+
 
 SELECT *
 FROM PortfolioProject..CovidVaccinations -- table 2
@@ -10,6 +11,7 @@ ORDER BY 3, 4
 
 SELECT location, date, total_cases, new_cases, total_deaths, population
 FROM PortfolioProject..CovidDeaths
+WHERE continent IS NOT NULL -- get rid of all the ones that were like world and all those other things like(North America, South America, Asia, Europe) cuz it's not location, it 's Continent
 ORDER BY 1, 2 -- let's keep this going because i don't like things not being organized 
 
 
@@ -21,9 +23,13 @@ ORDER BY 1, 2 -- let's keep this going because i don't like things not being org
 
 SELECT location, date, total_cases, total_deaths, (total_deaths /total_cases) * 100 AS DeathPercentage 
 FROM PortfolioProject..CovidDeaths
-WHERE location LIKE '%states%' 
+WHERE continent IS NOT NULL 
+      AND
+	  (
+	  location LIKE '%states%' 
 	 OR 
 	  location LIKE 'jor%'
+	  )
 ORDER BY 1, 2 DESC
 
 
@@ -51,13 +57,84 @@ WHERE location LIKE '%states%'
 	 OR 
 	  location LIKE 'jor%'
 */
+WHERE continent IS NOT NULL
 GROUP BY location, population
 ORDER BY 4 DESC
 
 
 
+-- Showing Countries with Highest Death Count per Population 
+
+SELECT location, MAX(CAST(total_deaths AS int)) AS TotalDeathCount --  The CAST () function converts a value (of any type) into a specified datatype
+FROM PortfolioProject..CovidDeaths
+/*
+WHERE location LIKE '%states%' 
+	 OR 
+	  location LIKE 'jor%'
+*/
+WHERE continent IS NOT NULL
+GROUP BY location
+ORDER BY TotalDeathCount DESC
 
 
+
+-- LET's BREAK THINGS DOWN BY CONTINENT 
+-- Showing Continent with the Highest Death Count per Population 
+
+SELECT continent, MAX(CAST(total_deaths AS int)) AS TotalDeathCount 
+FROM PortfolioProject..CovidDeaths
+/*
+WHERE location LIKE '%states%' 
+	 OR 
+	  location LIKE 'jor%'
+*/
+WHERE continent IS NOT NULL
+GROUP BY continent
+ORDER BY TotalDeathCount DESC
+
+
+
+
+
+-- This actually is the correct numbers of  Highest Death Count per Continent not the code above 
+
+SELECT location, MAX(CAST(total_deaths AS int)) AS TotalDeathCount 
+FROM PortfolioProject..CovidDeaths
+/*
+WHERE location LIKE '%states%' 
+	 OR 
+	  location LIKE 'jor%'
+*/
+WHERE continent IS NULL
+GROUP BY location
+ORDER BY TotalDeathCount DESC
+
+
+
+
+-- it works like that, but when I added GROUP BY for example on the date column, it didn't work. gave me this error "Divide by zero error encountered". look at GLOBAL NUMBERS code. so i decide to add HAVING clause to filter all values having 0 in totalDeaths
+
+SELECT  SUM(new_deaths)/SUM(new_cases) * 100 AS DeathPercentage 
+FROM PortfolioProject..CovidDeaths
+WHERE continent IS NOT NULL 
+
+
+-- GLOBAL NUMBERS 
+
+SELECT date, SUM(new_cases) AS TotalCasesForEachDay, SUM(CAST(new_deaths AS int))AS TotalDeathsForEachDay, (SUM(CAST(new_deaths AS int))/SUM(new_cases))*100 AS DeathPercentage 
+FROM PortfolioProject..CovidDeaths
+WHERE continent IS NOT NULL 
+/*
+      AND
+	  (
+	  location LIKE '%states%' 
+	 OR 
+	  location LIKE 'jor%'
+	  )
+*/
+GROUP BY date -- will give us on each day the total across the world because we're not filtering by any Continent or location or anything it's just by date 
+HAVING SUM(new_deaths) <> 0
+ORDER BY 1 
 
 
 
