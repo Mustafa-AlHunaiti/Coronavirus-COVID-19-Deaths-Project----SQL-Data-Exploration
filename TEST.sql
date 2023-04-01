@@ -159,18 +159,33 @@ ORDER BY 1, 2
 -- What is the total amount of people in the world that have been vaccinated 
 
 SELECT dea.continent, dea.location, dea.date, dea.Population, vac.new_vaccinations
+, SUM(CONVERT(bigint, vac.new_vaccinations)) OVER (PARTITION BY dea.location ORDER BY dea.location, dea.date) AS RollingPeopleVaccinated -- The CONVERT() function converts a value (of any type) into a specified datatype
+--, (RollingPeopleVaccinated/dea.Population)*100
+FROM PortfolioProject..CovidDeaths dea
+JOIN PortfolioProject..CovidVaccinations vac
+	ON dea.location = vac.location
+	AND dea.date = vac.date
+WHERE dea.continent IS NOT NULL
+ORDER BY 2, 3
+
+
+--USE CTE
+
+WITH PopVSVac (Continent, location, Date, Population, new_vaccinations, RollingPeopleVaccinated)
+AS
+(
+SELECT dea.continent, dea.location, dea.date, dea.Population, vac.new_vaccinations
+, SUM(CONVERT(bigint, vac.new_vaccinations)) OVER (PARTITION BY dea.location ORDER BY dea.location, dea.date) AS RollingPeopleVaccinated 
 FROM PortfolioProject..CovidDeaths dea
 JOIN PortfolioProject..CovidVaccinations vac
 	ON dea.location = vac.location
 	AND dea.date = vac.date
 WHERE dea.continent IS NOT NULL 
-ORDER BY 2, 3
-
-
-
-
-
-
+-- ORDER BY 2, 3
+)
+SELECT *, (RollingPeopleVaccinated/Population)*100 -- for example, almost 37 percent of the population in Jordan is vaccinated
+FROM PopVSVac
+-- WHERE location = 'jordan'
 
 
 
