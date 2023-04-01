@@ -155,7 +155,8 @@ ORDER BY 1, 2
 
 
 
--- 
+-- Looking at total Population VS Vaccination 
+-- What is the total amount of people in the world that have been vaccinated 
 
 SELECT *
 FROM PortfolioProject..CovidDeaths dea
