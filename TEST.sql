@@ -158,12 +158,13 @@ ORDER BY 1, 2
 -- Looking at total Population VS Vaccination 
 -- What is the total amount of people in the world that have been vaccinated 
 
-SELECT *
+SELECT dea.continent, dea.location, dea.date, dea.Population, vac.new_vaccinations
 FROM PortfolioProject..CovidDeaths dea
 JOIN PortfolioProject..CovidVaccinations vac
 	ON dea.location = vac.location
 	AND dea.date = vac.date
-
+WHERE dea.continent IS NOT NULL 
+ORDER BY 2, 3
 
 
 
