@@ -1,4 +1,4 @@
-SELECT  * 
+SELECT *
 FROM PortfolioProject..CovidDeaths -- table 1
 ORDER BY 3, 4
 
@@ -114,14 +114,14 @@ ORDER BY TotalDeathCount DESC
 
 -- it works like that, but when I added GROUP BY for example on the date column, it didn't work. gave me this error "Divide by zero error encountered". look at GLOBAL NUMBERS code. so i decide to add HAVING clause to filter all values having 0 in totalDeaths
 
-SELECT  SUM(new_deaths)/SUM(new_cases) * 100 AS DeathPercentage 
+SELECT  SUM(CAST(new_deaths AS int))/SUM(new_cases) * 100 AS DeathPercentage 
 FROM PortfolioProject..CovidDeaths
 WHERE continent IS NOT NULL 
 
 
 -- GLOBAL NUMBERS 
 
-SELECT date, SUM(new_cases) AS TotalCasesForEachDay, SUM(CAST(new_deaths AS int))AS TotalDeathsForEachDay, (SUM(CAST(new_deaths AS int))/SUM(new_cases))*100 AS DeathPercentage 
+SELECT date, SUM(new_cases) AS TotalCases, SUM(CAST(new_deaths AS int))AS TotalDeaths, SUM(CAST(new_deaths AS int))/SUM(new_cases)*100 AS DeathPercentage 
 FROM PortfolioProject..CovidDeaths
 WHERE continent IS NOT NULL 
 /*
@@ -133,8 +133,38 @@ WHERE continent IS NOT NULL
 	  )
 */
 GROUP BY date -- will give us on each day the total across the world because we're not filtering by any Continent or location or anything it's just by date 
-HAVING SUM(new_deaths) <> 0
-ORDER BY 1 
+HAVING SUM(new_cases) <> 0
+ORDER BY 1
+
+
+-- GLOBAL NUMBERS 
+
+SELECT SUM(new_cases) AS TotalCases, SUM(CAST(new_deaths AS int))AS TotalDeaths, SUM(CAST(new_deaths AS int))/SUM(new_cases)*100 AS DeathPercentage 
+FROM PortfolioProject..CovidDeaths
+WHERE continent IS NOT NULL 
+/*
+      AND
+	  (
+	  location LIKE '%states%' 
+	 OR 
+	  location LIKE 'jor%'
+	  )
+*/
+ORDER BY 1, 2
+
+
+
+
+SELECT *
+FROM PortfolioProject..CovidVaccinations
+
+
+
+
+
+
+
+
 
 
 
