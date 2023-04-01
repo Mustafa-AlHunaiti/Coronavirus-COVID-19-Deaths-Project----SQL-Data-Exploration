@@ -155,8 +155,13 @@ ORDER BY 1, 2
 
 
 
+-- 
+
 SELECT *
-FROM PortfolioProject..CovidVaccinations
+FROM PortfolioProject..CovidDeaths dea
+JOIN PortfolioProject..CovidVaccinations vac
+	ON dea.location = vac.location
+	AND dea.date = vac.date
 
 
 
